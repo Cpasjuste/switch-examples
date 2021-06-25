@@ -10,3 +10,4 @@ build
 *.bz2
 *.dksh
 *~
+cmake-build*

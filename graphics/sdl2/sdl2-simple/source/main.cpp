@@ -1,10 +1,6 @@
-#include <stdlib.h>
-#include <stdio.h>
-
 #include <SDL.h>
 
-void draw_rects(SDL_Renderer *renderer, int x, int y)
-{
+void draw_rects(SDL_Renderer *renderer, int x, int y) {
     // R
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     SDL_Rect r = {x, y, 64, 64};
@@ -21,12 +17,11 @@ void draw_rects(SDL_Renderer *renderer, int x, int y)
     SDL_RenderFillRect(renderer, &b);
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     SDL_Event event;
     SDL_Window *window;
     SDL_Renderer *renderer;
-    int done = 0, x = 0, w = 1920, h = 1080;
+    int done = 0, x = 0, w = 1280, h = 720;
 
     // mandatory at least on switch, else gfx is not properly closed
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
@@ -39,7 +34,7 @@ int main(int argc, char *argv[])
     // available switch SDL2 video modes :
     // 1920 x 1080 @ 32 bpp (SDL_PIXELFORMAT_RGBA8888)
     // 1280 x 720 @ 32 bpp (SDL_PIXELFORMAT_RGBA8888)
-    window = SDL_CreateWindow("sdl2_gles2", 0, 0, 1920, 1080, 0);
+    window = SDL_CreateWindow("sdl2_gles2", 0, 0, 1280, 720, 0);
     if (!window) {
         SDL_Log("SDL_CreateWindow: %s\n", SDL_GetError());
         SDL_Quit();
@@ -59,16 +54,17 @@ int main(int argc, char *argv[])
     // else joycons are individually mapped to joystick #0, joystick #1, ...
     // https://github.com/devkitPro/SDL/blob/switch-sdl2/src/joystick/switch/SDL_sysjoystick.c#L45
     for (int i = 0; i < 2; i++) {
-        if (SDL_JoystickOpen(i) == NULL) {
+        if (SDL_JoystickOpen(i) == nullptr) {
             SDL_Log("SDL_JoystickOpen: %s\n", SDL_GetError());
-            SDL_Quit();
-            return -1;
         }
     }
 
     while (!done) {
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
+                case SDL_QUIT:
+                    done = 1;
+                    break;
                 case SDL_JOYAXISMOTION:
                     SDL_Log("Joystick %d axis %d value: %d\n",
                             event.jaxis.which,
@@ -83,7 +79,7 @@ int main(int argc, char *argv[])
                     if (event.jbutton.which == 0) {
                         if (event.jbutton.button == 0) {
                             // (A) button down
-                            if(w == 1920) {
+                            if (w == 1920) {
                                 SDL_SetWindowSize(window, 1280, 720);
                             } else {
                                 SDL_SetWindowSize(window, 1920, 1080);
